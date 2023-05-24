@@ -14,10 +14,15 @@ public class Airline {
     public Airline() {}
 
     public Airline(AirlineBuilder builder) {
+        index = index + 1 ;
         this.id = builder.id; ;
         this.name = builder.name;
         this.type = builder.type;
-        index = index + 1 ;
+
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getId() {
@@ -55,7 +60,8 @@ public class Airline {
     @Override
     public String toString() {
         return "Airline{" +
-                "name='" + name + '\'' +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
                 ", type=" + type +
                 '}';
     }

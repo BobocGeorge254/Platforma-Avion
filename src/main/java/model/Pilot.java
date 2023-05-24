@@ -6,7 +6,7 @@ public class Pilot extends Human {
 
     private static int index = 0 ;
     private int id ;
-    private Date hireDate;
+    private String hireDate;
 
     private Pilot(PilotBuilder builder) {
         super(builder.firstName, builder.lastName);
@@ -14,7 +14,11 @@ public class Pilot extends Human {
         this.hireDate = builder.hireDate;
     }
 
-    public Date getHireDate() {
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getHireDate() {
         return hireDate;
     }
 
@@ -27,15 +31,16 @@ public class Pilot extends Human {
         private int id ;
         private String firstName;
         private String lastName;
-        private Date hireDate;
+        private String hireDate;
 
         public PilotBuilder(String firstName, String lastName) {
             this.id = index ;
+            index ++ ;
             this.firstName = firstName;
             this.lastName = lastName;
         }
 
-        public PilotBuilder setHireDate(Date hireDate) {
+        public PilotBuilder setHireDate(String  hireDate) {
             this.hireDate = hireDate;
             return this;
         }
@@ -48,7 +53,8 @@ public class Pilot extends Human {
     @Override
     public String toString() {
         return "Pilot{" +
-                "firstName='" + getFirstName() + '\'' +
+                "id='" + getId() + '\'' +
+                ", firstName='" + getFirstName() + '\'' +
                 ", lastName='" + getLastName() + '\'' +
                 ", hireDate=" + hireDate +
                 '}';

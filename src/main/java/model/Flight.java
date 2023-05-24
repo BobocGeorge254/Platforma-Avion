@@ -12,7 +12,7 @@ public class Flight {
     private Airport departure;
     private Airport destination;
     private Seat[] seats;
-    private Date date;
+    private String date;
     private Pilot pilot;
 
     private Flight(FlightBuilder builder) {
@@ -49,7 +49,7 @@ public class Flight {
         return seats;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
@@ -67,7 +67,7 @@ public class Flight {
         private Airport departure;
         private Airport destination;
         private Seat[] seats;
-        private Date date;
+        private String date;
         private Pilot pilot;
 
         public FlightBuilder() {
@@ -89,7 +89,7 @@ public class Flight {
             return this;
         }
 
-        public FlightBuilder setDate(Date date) {
+        public FlightBuilder setDate(String date) {
             this.date = date;
             return this;
         }
@@ -103,5 +103,24 @@ public class Flight {
             return new Flight(this);
         }
     }
+
+    @Override
+    public String toString() {
+        return "Flight{" +
+                "id=" + id +
+                ", airline=" + airline +
+                ", departure=" + departure +
+                ", destination=" + destination +
+                ", date=" + date +
+                ", pilot=" + pilot +
+                '}';
+    }
+
+
+
+
+
+
+
 }
 

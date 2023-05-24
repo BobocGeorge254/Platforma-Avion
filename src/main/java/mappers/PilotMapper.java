@@ -21,7 +21,7 @@ public class PilotMapper {
     public Pilot mapToPilot(ResultSet resultSet) throws SQLException {
         if (resultSet.next()) {
             return new Pilot.PilotBuilder(resultSet.getString(2),resultSet.getString(3))
-                    .setHireDate(resultSet.getDate(4))
+                    .setHireDate(resultSet.getString(4))
                     .build();
         } else {
             throw new SQLException("No rows in ResultSet");
@@ -34,7 +34,7 @@ public class PilotMapper {
         while (resultSet.next()) {
             PilotList.add(
                     new Pilot.PilotBuilder(resultSet.getString(2),resultSet.getString(3))
-                            .setHireDate(resultSet.getDate(4))
+                            .setHireDate(resultSet.getString(4))
                             .build()
             );
         }

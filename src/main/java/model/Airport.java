@@ -18,6 +18,10 @@ public class Airport {
         index = index + 1 ;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public int getId() {
         return id;
     }
@@ -33,7 +37,8 @@ public class Airport {
     @Override
     public String toString() {
         return "Airport{" +
-                "city='" + city + '\'' +
+                "id='" + id + '\'' +
+                ", city='" + city + '\'' +
                 ", address='" + address + '\'' +
                 '}';
     }

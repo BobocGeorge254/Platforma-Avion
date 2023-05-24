@@ -54,7 +54,7 @@ public class PilotRepositoryImpl implements PilotRepository {
             preparedStatement.setInt(4, id);
             preparedStatement.setString(1, newPilot.getFirstName().toString());
             preparedStatement.setString(2, newPilot.getLastName().toString());
-            preparedStatement.setString(3, newPilot.getHireDate().toString());
+            preparedStatement.setString(3, newPilot.getHireDate());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
