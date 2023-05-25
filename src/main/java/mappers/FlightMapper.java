@@ -53,5 +53,31 @@ public class FlightMapper {
         }
     }
 
+    public List<Flight> mapToFlightList(ResultSet resultSet) throws SQLException {
+        List<Flight> FlightList = new ArrayList<>();
+        while (resultSet.next()) {
+            Flight.FlightBuilder flightBuilder = new Flight.FlightBuilder();
+            AirlineRepositoryImpl airlineRepository = new AirlineRepositoryImpl() ;
+            Airline airline = (Airline) airlineRepository.getAirlineById(resultSet.getInt(2)) ;
+
+            AirportRepositoryImpl airportRepository = new AirportRepositoryImpl() ;
+            Airport departure = (Airport) airportRepository.getAirportById(resultSet.getInt(3)) ;
+            Airport destination = (Airport) airportRepository.getAirportById(resultSet.getInt(4)) ;
+
+            PilotRepositoryImpl pilotRepository = new PilotRepositoryImpl() ;
+            Pilot pilot = (Pilot) pilotRepository.getPilotById(resultSet.getInt(6)) ;
+
+            flightBuilder.setAirline(airline) ;
+            flightBuilder.setDeparture(departure) ;
+            flightBuilder.setDestination(destination) ;
+            flightBuilder.setDate(resultSet.getString(5)) ;
+            flightBuilder.setPilot(pilot) ;
+            FlightList.add(
+                    flightBuilder.build()
+            ) ;
+        }
+        return FlightList ;
+    }
+
 
 }

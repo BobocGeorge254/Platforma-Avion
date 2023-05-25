@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 public class FlightRepositoryImpl implements FlightRepository {
@@ -64,4 +65,19 @@ public class FlightRepositoryImpl implements FlightRepository {
         return Optional.empty();
     }
 
+    @Override
+    public List<Flight> getAllFlights() {
+        String selectSql = "SELECT * FROM flights";
+
+        try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return flightMapper.mapToFlightList(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return List.of();
+    }
 }

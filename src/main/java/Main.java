@@ -1,24 +1,13 @@
-import java.sql.Connection;
 import java.util.*;
 
-import mappers.AirlineMapper;
 import model.*;
 import model.enums.*;
-import repository.AirlineRepository;
-import repository.AirportRepository;
-import repository.FlightRepository;
-import repository.PilotRepository;
+import repository.PassengerRepository;
 import repository.impl.*;
 import service.impl.*;
 import exceptions.*;
-import config.DatabaseConfiguration ;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
-import org.postgresql.Driver;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
@@ -238,90 +227,16 @@ public class Main {
 
             }
         }
-        /*
-        Passenger passenger = new Passenger.PassengerBuilder("George", "Boboc")
-                .setEmail("ghitzaboboc@gmail.com")
-                .setPhoneNumber("0770759972").
-                build();
-        Passenger passenger1 = new Passenger.PassengerBuilder("George", "Boboc")
-                .setEmail("ghitzaboboc@gmail.com")
-                .setPhoneNumber("0770759973").
-                build();
 
-        Airline airline = new Airline.AirlineBuilder()
-                .setName("Tarom")
-                .setType(AirlineType.COMMERCIAL)
-                .build();
-
-        Airline airline1 = new Airline.AirlineBuilder()
-                .setName("Wizzair")
-                .setType(AirlineType.COMMERCIAL)
-                .build() ;
-
-        Airport departure = new Airport.AirportBuilder()
-                .setCity("Bucharest")
-                .setAddress("Str. Henri Coanda, no. 25")
-                .build() ;
-
-        Airport departure1 = new Airport.AirportBuilder()
-                .setCity("London")
-                .setAddress("Street Heathrow, no. 15")
-                .build() ;
-
-        AirportRepositoryImpl ari = new AirportRepositoryImpl() ;
-        //ari.addNewAirport(departure);
-
-        Airport arrival = new Airport.AirportBuilder()
-                .setCity("Paris")
-                .setAddress("Rue Bovais, no.1")
-                .build() ;
-        //ari.addNewAirport(arrival);
-        Airport arrival1 = new Airport.AirportBuilder()
-                .setCity("Madrid")
-                .setAddress("Avenue Leo Messi, no.292")
-                .build() ;
-
-        Pilot pilot = new Pilot.PilotBuilder("Labus", "Claudiu")
-                .setHireDate("25/04/2003")
-                .build();
-        Pilot pilot1 = new Pilot.PilotBuilder("Matei", "Andrei")
-                .setHireDate("01/05/2005")
-                .build();
-
-        PilotRepositoryImpl pri = new PilotRepositoryImpl() ;
-        //pri.addNewPilot(pilot);
-        //pri.addNewPilot(pilot1);
-        //System.out.println(pri.getPilotById(0)) ;
-        //pri.deletePilotById(0);
-        Flight flight = new Flight.FlightBuilder()
-                .setAirline(airline)
-                .setDeparture(departure)
-                .setDestination(arrival)
-                .setDate("21/05/2023")
-                .setPilot(pilot)
-                .build() ;
-        Flight flight1 = new Flight.FlightBuilder()
-            .setAirline(airline)
-            .setDeparture(departure1)
-            .setDestination(arrival1)
-            .setDate("15/12/2023")
-            .setPilot(pilot1)
-            .build() ;
-        FlightRepositoryImpl fri = new FlightRepositoryImpl() ;
-        //fri.addNewFlight(flight);
-        //fri.deleteFlightById(flight.getId());
-        //System.out.println(fri.getFlightById(flight.getId()));
-        Seat seat = new Seat(1) ;
-        Ticket ticket = new Ticket.TicketBuilder()
-                .setPassenger(passenger)
-                .setFlight(flight)
-                .setSeat(seat)
-                .build();
-        tsService.bookTicket(ticket);
-        tsService.addFlight(flight);
-        tsService.addFlight(flight1);
-        */
         else {
+
+            //PassengerRepositoryImpl a = new PassengerRepositoryImpl() ;
+            //a.deletePassengerById(0);
+            AirportRepositoryImpl airportRepository = new AirportRepositoryImpl();
+            FlightRepositoryImpl flightRepository = new FlightRepositoryImpl();
+
+            List<Flight> flightsBD = flightRepository.getAllFlights();
+            List<Airport> departuresBD = flightsBD.stream().map(flight -> flight.getDeparture()).collect(Collectors.toList());
 
             System.out.println("How many tickets would you like to book?");
             Scanner input = new Scanner(System.in);
@@ -329,102 +244,109 @@ public class Main {
 
             while (counter > 0) {
                 System.out.println("Book your flight");
+                counter = counter - 1;
 
                 System.out.println("Where do you want to fly from?");
-                input = new Scanner(System.in);
-                String inputDeparture = input.nextLine(); ///input the departure
-
-
-                List<String> destinations = tsService.destinations(inputDeparture); ///get the destinations
-
-                boolean hasDestinations = false;
-                while (!hasDestinations) {
-                    try {
-                        if (destinations.isEmpty()) {
-                            throw new NoDestinationException("No destinations available from " + inputDeparture);
-                        }
-
-                        hasDestinations = true;
-                    } catch (NoDestinationException e) {
-                        System.out.println(e.getMessage());
-                        System.out.println();
-                        System.out.println("Where do you want to fly from?");
-                        input = new Scanner(System.in);
-                        inputDeparture = input.nextLine();
-                        destinations = tsService.destinations(inputDeparture);
-                    }
-                } ///try-catch block to handle if there are no destinations
-
-
-                ///when you find a destination, print all of them
-                System.out.println("Here are your possible destinations. Where do you want to fly to?");
-                Collections.sort(destinations);
-                for (int i = 0; i < destinations.size(); ++i) {
-                    System.out.println(destinations.get(i));
+                for (Airport departure : departuresBD) {
+                    System.out.println(departure.getCity());
                 }
 
-
-                input = new Scanner(System.in);
-                String inputDestination = input.nextLine(); ///input the destination
-
-
-                List<Flight> flights = tsService.flights(inputDeparture, inputDestination);
-                boolean hasFlights = false;
-                while (!hasFlights) {
+                boolean isValidDeparture = false ;
+                Integer departureID = null ;
+                while (!isValidDeparture) {
                     try {
-                        while (flights.isEmpty()) {
-                            throw new NoFlightsException("No flights available from " + inputDeparture + " to " + inputDestination);
-                        }
-                        hasFlights = true;
-                    } catch (NoFlightsException e) {
-                        System.out.println(e.getMessage());
-                        System.out.println();
-                        System.out.println("Here are your possible destinations. Where do you want to fly to?");
-                        for (int i = 0; i < destinations.size(); ++i) {
-                            System.out.println(destinations.get(i));
-                        }
                         input = new Scanner(System.in);
-                        inputDestination = input.nextLine();
-                        flights = tsService.flights(inputDeparture, inputDestination);
-                    }
-                } ///try-catch block to handle if there are no flights between departure and destination
-
-
-                System.out.println("Here are your possible flights. Please select an id!");
-                for (int i = 0; i < flights.size(); ++i) {
-                    FlightServiceImpl flightService = new FlightServiceImpl(flights.get(i));
-                    System.out.println("Flight: " + flights.get(i).getId());
-                    System.out.println("Company: " + flights.get(i).getAirline().getName() + " - " + flights.get(i).getAirline().getType());
-                    System.out.println("Date: " + flights.get(i).getDate().toString());
-                    System.out.println("Free seats in Economy: " + flightService.getFreeSeatsEconomy());
-                    System.out.println("Free seats in Business: " + flightService.getFreeSeatsBusiness());
-                    System.out.println("Free seats in First Class: " + flightService.getFreeSeatsFirstClass());
-                    System.out.println("Pilot :" + flights.get(i).getPilot());
-                    System.out.println();
-                } ///print everything about the possible found flights
-
-
-                Scanner idFlight = new Scanner(System.in);
-                Flight inputFlight = new Flight.FlightBuilder().build(); ///input its id
-
-
-                Boolean found = false;
-                while (!found) {
-                    try {
-                        for (int i = 0; i < flights.size(); ++i) {
-                            if (flights.get(i).getId() == Integer.valueOf(idFlight.nextLine())) {
-                                inputFlight = flights.get(i);
-                                found = true;
-                                break;
-                            }
+                        String inputDeparture = input.nextLine();
+                        final String finalInputDeparture = inputDeparture;
+                        departureID = departuresBD.stream()
+                                .filter(departure -> departure.getCity().equals(finalInputDeparture))
+                                .map(departure -> departure.getId())
+                                .findFirst()
+                                .orElse(null);
+                        if (departureID == null) {
+                            throw new InvalidDestinationException("No destinations available from " + inputDeparture);
+                        } else {
+                            isValidDeparture = true;
                         }
-                        if (!found)
-                            throw new InvalidFlightException("Invalid Flight! Try again.");
-                    } catch (InvalidFlightException e) {
+                    }
+                    catch (InvalidDestinationException e) {
                         System.out.println(e.getMessage());
                     }
-                } ///try-catch block to handle if the inputed flight is not correct
+                }
 
+               final Integer finalDepartureId = departureID ;
+               List<Airport> destinations = flightsBD.stream()
+                       .filter(flight -> flight.getDeparture().getId() == finalDepartureId)
+                       .map(flight -> flight.getDestination())
+                       .collect(Collectors.toList());
+
+
+               System.out.println("Where do you want to fly to?");
+               for (Airport destination : destinations) {
+                   System.out.println(destination.getCity());
+               }
+
+               boolean isValidDestination = false ;
+               Integer destinationID = null ;
+               while (!isValidDestination) {
+                   try {
+                       input = new Scanner(System.in);
+                       String inputDestination = input.nextLine();
+                       final String finalInputDestination = inputDestination;
+                       destinationID = destinations.stream()
+                               .filter(destination -> destination.getCity().equals(finalInputDestination))
+                               .map(destination -> destination.getId())
+                               .findFirst()
+                               .orElse(null);
+                       if (destinationID == null) {
+                           throw new NoFlightsException("No flights available from the selected departure to the destination") ;
+                       } else {
+                           isValidDestination = true;
+                       }
+                   }
+                   catch (NoFlightsException e) {
+                       System.out.println(e.getMessage());
+                   }
+               }
+
+
+               final Integer finalDepartureId_ = departureID ;
+               final Integer finalDestinationId_ = destinationID ;
+               List<Flight> flights = flightsBD.stream()
+                       .filter(flight -> flight.getDeparture().getId() == finalDepartureId_)
+                       .filter(flight -> flight.getDestination().getId() == finalDestinationId_)
+                       .collect(Collectors.toList());
+
+               System.out.println(flights);
+
+
+
+               boolean validFlight = false ;
+               Flight flight = null ;
+               while (!validFlight) {
+                   try {
+                       System.out.println("Pick a flight!");
+                       input = new Scanner(System.in) ;
+                       Integer flightID = Integer.valueOf(input.nextLine()) ;
+
+                       flight = flights.stream()
+                               .filter(flight1 -> flight1.getId() == flightID)
+                               .findFirst()
+                               .orElse(null);
+                       if (flight == null)
+                           throw new InvalidFlightException("This flight dosen't exist! Try again!");
+
+                       validFlight = true ;
+                   } catch (InvalidFlightException e) {
+                       System.out.println(e.getMessage());
+                   }
+               }
+
+                FlightServiceImpl flightService = new FlightServiceImpl(flight);
+
+                System.out.println("Free seats in Economy: " + flightService.getFreeSeatsEconomy());
+                System.out.println("Free seats in Business: " + flightService.getFreeSeatsBusiness());
+                System.out.println("Free seats in First Class: " + flightService.getFreeSeatsFirstClass());
 
                 boolean isValidSeatClass = false;
                 String inputSeatClass = new String();
@@ -443,8 +365,6 @@ public class Main {
                     }
                 } ///try-catch block to handle if the inputed seat class is incorrect
 
-
-                FlightServiceImpl flightService = new FlightServiceImpl(inputFlight);
                 Integer aisleSeats = flightService.getAisleSeats(inputSeatClass);
                 Integer middleSeats = flightService.getMiddleSeats(inputSeatClass);
                 Integer windowSeats = flightService.getWindowSeats(inputSeatClass);
@@ -475,7 +395,7 @@ public class Main {
                     } catch (NoSeatsAvailableException e) {
                         System.out.println(e.getMessage());
                     }
-                } ///try-catch block to handle if the inputed seat type is incorrect
+                }
 
                 System.out.println("First name: ");
                 input = new Scanner(System.in);
@@ -498,36 +418,40 @@ public class Main {
                         .setPhoneNumber(phoneNumber)
                         .build();
 
-                Seat[] seats = inputFlight.getSeats();
+                Seat[] seats = flight.getSeats();
                 Set<Seat> setSeats = new HashSet<>();
                 for (int i = 0; i < seats.length; ++i)
                     setSeats.add(seats[i]);
 
-
-                FlightServiceImpl inputFlightService = new FlightServiceImpl(inputFlight);
                 for (Seat seatIt : seats) {
                     if (seatIt.getSeatType().toString().equals(inputSeatType) && seatIt.getSeatClass().toString().equals(inputSeatClass)) {
                         if (seatIt.isFree()) {
-                            inputFlightService.reserveSeat(seatIt.getNumber());
+                            flightService.reserveSeat(seatIt.getNumber());
                             Seat inputSeat = seatIt;
                             Ticket inputTicket = new Ticket.TicketBuilder()
                                     .setPassenger(inputPassenger)
-                                    .setFlight(inputFlight)
+                                    .setFlight(flight)
                                     .setSeat(inputSeat)
                                     .build();
                             System.out.println("The price will be: " + inputTicket.getPrice() + ". Continue? (YES/NO)");
                             input = new Scanner(System.in);
                             String decision = input.nextLine().toString();
-                            if (decision.equals("YES"))
+                            if (decision.equals("YES")) {
+                                PassengerRepositoryImpl passengerRepository = new PassengerRepositoryImpl() ;
+                                passengerRepository.addNewPassenger(inputPassenger);
+                                //passengerRepository.deletePassengerById(0);
+
+                                TicketRepositoryImpl ticketRepository = new TicketRepositoryImpl() ;
+                                ticketRepository.addNewTicket(inputTicket);
                                 tsService.bookTicket(inputTicket);
+                            }
                             break;
                         }
                     }
-
                 }
-                counter = counter - 1;
+                tsService.printAllTickets();
+
             }
-            tsService.printAllTickets();
         }
     }
 }

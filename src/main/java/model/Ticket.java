@@ -51,7 +51,9 @@ public class Ticket {
         return seat;
     }
 
-
+    public int getId() {
+        return id;
+    }
 
     public static class TicketBuilder {
         private int id ;
