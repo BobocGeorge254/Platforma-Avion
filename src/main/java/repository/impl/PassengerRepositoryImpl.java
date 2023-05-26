@@ -18,12 +18,12 @@ public class PassengerRepositoryImpl implements PassengerRepository {
     private static final PassengerMapper passengerMapper = PassengerMapper.getInstance();
 
     @Override
-    public Object getPassengerById(int id) {
+    public Object getPassengerById(UUID id) {
         String selectSql = "SELECT * FROM Passengers WHERE id=?";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {
-            preparedStatement.setInt(1, id);
+            preparedStatement.setString(1, id.toString());
 
             ResultSet resultSet = preparedStatement.executeQuery();
             return passengerMapper.mapToPassenger(resultSet);
@@ -35,12 +35,12 @@ public class PassengerRepositoryImpl implements PassengerRepository {
     }
 
     @Override
-    public void deletePassengerById(int id) {
+    public void deletePassengerById(UUID id) {
         String deleteSql = "DELETE FROM Passengers WHERE id=?";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(deleteSql)) {
-            preparedStatement.setInt(1, id);
+            preparedStatement.setString(1, id.toString());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -49,12 +49,12 @@ public class PassengerRepositoryImpl implements PassengerRepository {
     }
 
     @Override
-    public void updatePassengerById(int id, Passenger newPassenger) {
+    public void updatePassengerById(UUID id, Passenger newPassenger) {
         String updateSql = "UPDATE Passengers SET first_name=?, last_name=?, email =?, phone_number = ? WHERE id=?";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(updateSql)) {
-            preparedStatement.setInt(5, id);
+            preparedStatement.setString(5, id.toString());
             preparedStatement.setString(1, newPassenger.getFirstName().toString());
             preparedStatement.setString(2, newPassenger.getLastName().toString());
             preparedStatement.setString(3, newPassenger.getEmail().toString());
@@ -72,7 +72,7 @@ public class PassengerRepositoryImpl implements PassengerRepository {
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(insertSql)) {
-            preparedStatement.setInt(1, Passenger.getId());
+            preparedStatement.setString(1, Passenger.getId().toString());
             preparedStatement.setString(2, Passenger.getFirstName().toString());
             preparedStatement.setString(3, Passenger.getLastName().toString());
             preparedStatement.setString(4, Passenger.getEmail().toString());

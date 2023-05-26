@@ -1,7 +1,9 @@
 import java.util.*;
 
+import com.opencsv.CSVWriter;
 import model.*;
 import model.enums.*;
+import repository.AirportRepository;
 import repository.PassengerRepository;
 import repository.impl.*;
 import service.impl.*;
@@ -9,12 +11,18 @@ import exceptions.*;
 
 import java.util.stream.Collectors;
 
+import com.opencsv.CSVWriter;
+
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Main {
     public static void main(String[] args) {
 
 
         TicketSystem ts = TicketSystem.getInstance() ;
         TicketSystemServiceImpl tsService = new TicketSystemServiceImpl(ts) ;
+        String filePath = "data.csv" ;
 
         Scanner menu = new Scanner(System.in) ;
         if (Integer.valueOf(menu.nextLine()) == 1) {
@@ -57,6 +65,7 @@ public class Main {
                     }
 
                     Airline airline = new Airline.AirlineBuilder()
+                            .setId(UUID.randomUUID())
                             .setName(nume)
                             .setType(airlineType)
                             .build();
@@ -76,6 +85,7 @@ public class Main {
                     String address = input.nextLine() ;
 
                     Airport airport = new Airport.AirportBuilder()
+                            .setId(UUID.randomUUID())
                             .setCity(city)
                             .setAddress(address)
                             .build() ;
@@ -99,6 +109,7 @@ public class Main {
                     String hire_date = input.nextLine() ;
 
                     Pilot pilot = new Pilot.PilotBuilder(firstName, lastName)
+                            .setId(UUID.randomUUID())
                             .setHireDate(hire_date)
                             .build() ;
 
@@ -118,7 +129,7 @@ public class Main {
 
                     System.out.println("ID of the flight airline:" );
                     input = new Scanner(System.in) ;
-                    Integer airlineID = Integer.valueOf(input.nextLine()) ;
+                    String airlineID = input.nextLine() ;
 
                     List <Airport> airportList = airportRepository.getAllAirports() ;
                     for (Airport airport : airportList) {
@@ -127,11 +138,11 @@ public class Main {
 
                     System.out.println("ID of the departure airport:" );
                     input = new Scanner(System.in) ;
-                    Integer departureID = Integer.valueOf(input.nextLine()) ;
+                    String departureID = input.nextLine();
 
                     System.out.println("ID of the arrival airport:" );
                     input = new Scanner(System.in) ;
-                    Integer arrivalID = Integer.valueOf(input.nextLine()) ;
+                    String arrivalID =input.nextLine() ;
 
                     System.out.println("Date of the flight (DD/MM/YYYY):" );
                     input = new Scanner(System.in) ;
@@ -144,21 +155,16 @@ public class Main {
 
                     System.out.println("ID of the pilot: ");
                     input = new Scanner(System.in) ;
-                    Integer pilotID = Integer.valueOf(input.nextLine()) ;
+                    String pilotID = input.nextLine() ;
 
-                    Airline airline = (Airline) airlineRepository.getAirlineById(airlineID) ;
-                    airline.setId(airlineID);
+                    Airline airline = (Airline) airlineRepository.getAirlineById(UUID.fromString(airlineID)) ;
+                    Airport departure = (Airport) airportRepository.getAirportById(UUID.fromString(departureID)) ;
+                    Airport arrival = (Airport) airportRepository.getAirportById(UUID.fromString(arrivalID)) ;
+                    Pilot pilot = (Pilot) pilotRepository.getPilotById(UUID.fromString(pilotID)) ;
 
-                    Airport departure = (Airport) airportRepository.getAirportById(departureID) ;
-                    departure.setId(departureID);
-
-                    Airport arrival = (Airport) airportRepository.getAirportById(arrivalID) ;
-                    arrival.setId(arrivalID);
-
-                    Pilot pilot = (Pilot) pilotRepository.getPilotById(pilotID) ;
-                    pilot.setId(pilotID) ;
 
                     Flight flight = new Flight.FlightBuilder()
+                            .setId(UUID.randomUUID())
                             .setAirline(airline)
                             .setDeparture(departure)
                             .setDestination(arrival)
@@ -183,9 +189,9 @@ public class Main {
 
                     System.out.println("ID of the flight airline:" );
                     input = new Scanner(System.in) ;
-                    Integer airlineID = Integer.valueOf(input.nextLine()) ;
+                    String airlineID = input.nextLine() ;
 
-                    airlineRepository.deleteAirlineById(airlineID);
+                    airlineRepository.deleteAirlineById(UUID.fromString(airlineID));
 
                 }
                 if (decision == 7) {
@@ -197,9 +203,9 @@ public class Main {
 
                     System.out.println("ID of the airport:" );
                     input = new Scanner(System.in) ;
-                    Integer airportID = Integer.valueOf(input.nextLine()) ;
+                    String airportID = input.nextLine() ;
 
-                    airportRepository.deleteAirportById(airportID);
+                    airportRepository.deleteAirportById(UUID.fromString(airportID));
                 }
                 if (decision == 8) {
                     PilotRepositoryImpl pilotRepository = new PilotRepositoryImpl() ;
@@ -210,19 +216,23 @@ public class Main {
 
                     System.out.println("ID of the Pilot:" );
                     input = new Scanner(System.in) ;
-                    Integer PilotID = Integer.valueOf(input.nextLine()) ;
+                    String PilotID = input.nextLine() ;
 
-                    pilotRepository.deletePilotById(PilotID);
+                    pilotRepository.deletePilotById(UUID.fromString(PilotID));
                 }
 
                 if (decision == 9) {
                     FlightRepositoryImpl flightRepository = new FlightRepositoryImpl() ;
+                    List <Flight> FlightList = flightRepository.getAllFlights() ;
+                    for (Flight flight : FlightList) {
+                        System.out.println(flight);
+                    }
 
                     System.out.println("ID of the Flight:" );
                     input = new Scanner(System.in) ;
-                    Integer FlightID = Integer.valueOf(input.nextLine()) ;
+                    String FlightID = input.nextLine() ;
 
-                    flightRepository.deleteFlightById(FlightID);
+                    flightRepository.deleteFlightById(UUID.fromString(FlightID));
                 }
 
             }
@@ -252,7 +262,7 @@ public class Main {
                 }
 
                 boolean isValidDeparture = false ;
-                Integer departureID = null ;
+                String departureID = null ;
                 while (!isValidDeparture) {
                     try {
                         input = new Scanner(System.in);
@@ -260,7 +270,7 @@ public class Main {
                         final String finalInputDeparture = inputDeparture;
                         departureID = departuresBD.stream()
                                 .filter(departure -> departure.getCity().equals(finalInputDeparture))
-                                .map(departure -> departure.getId())
+                                .map(departure -> departure.getId().toString())
                                 .findFirst()
                                 .orElse(null);
                         if (departureID == null) {
@@ -274,9 +284,9 @@ public class Main {
                     }
                 }
 
-               final Integer finalDepartureId = departureID ;
+               final UUID finalDepartureId = UUID.fromString(departureID) ;
                List<Airport> destinations = flightsBD.stream()
-                       .filter(flight -> flight.getDeparture().getId() == finalDepartureId)
+                       .filter(flight -> flight.getDeparture().getId().equals(finalDepartureId))
                        .map(flight -> flight.getDestination())
                        .collect(Collectors.toList());
 
@@ -287,7 +297,7 @@ public class Main {
                }
 
                boolean isValidDestination = false ;
-               Integer destinationID = null ;
+               String destinationID = null ;
                while (!isValidDestination) {
                    try {
                        input = new Scanner(System.in);
@@ -295,7 +305,7 @@ public class Main {
                        final String finalInputDestination = inputDestination;
                        destinationID = destinations.stream()
                                .filter(destination -> destination.getCity().equals(finalInputDestination))
-                               .map(destination -> destination.getId())
+                               .map(destination -> destination.getId().toString())
                                .findFirst()
                                .orElse(null);
                        if (destinationID == null) {
@@ -310,11 +320,11 @@ public class Main {
                }
 
 
-               final Integer finalDepartureId_ = departureID ;
-               final Integer finalDestinationId_ = destinationID ;
+               final UUID finalDepartureId_ = UUID.fromString(departureID) ;
+               final UUID finalDestinationId_ = UUID.fromString(destinationID) ;
                List<Flight> flights = flightsBD.stream()
-                       .filter(flight -> flight.getDeparture().getId() == finalDepartureId_)
-                       .filter(flight -> flight.getDestination().getId() == finalDestinationId_)
+                       .filter(flight -> flight.getDeparture().getId().equals(finalDepartureId_))
+                       .filter(flight -> flight.getDestination().getId().equals(finalDestinationId_))
                        .collect(Collectors.toList());
 
                System.out.println(flights);
@@ -327,10 +337,11 @@ public class Main {
                    try {
                        System.out.println("Pick a flight!");
                        input = new Scanner(System.in) ;
-                       Integer flightID = Integer.valueOf(input.nextLine()) ;
+                       String flightID = input.nextLine() ;
+                       UUID flightUUID = UUID.fromString(flightID) ;
 
                        flight = flights.stream()
-                               .filter(flight1 -> flight1.getId() == flightID)
+                               .filter(flight1 -> flight1.getId().equals(flightUUID))
                                .findFirst()
                                .orElse(null);
                        if (flight == null)
@@ -414,6 +425,7 @@ public class Main {
                 String phoneNumber = input.nextLine().toString();
 
                 Passenger inputPassenger = new Passenger.PassengerBuilder(firstNameInput, lastNameInput)
+                        .setId(UUID.randomUUID())
                         .setEmail(email)
                         .setPhoneNumber(phoneNumber)
                         .build();
@@ -429,6 +441,7 @@ public class Main {
                             flightService.reserveSeat(seatIt.getNumber());
                             Seat inputSeat = seatIt;
                             Ticket inputTicket = new Ticket.TicketBuilder()
+                                    .setId(UUID.randomUUID())
                                     .setPassenger(inputPassenger)
                                     .setFlight(flight)
                                     .setSeat(inputSeat)
@@ -444,6 +457,7 @@ public class Main {
                                 TicketRepositoryImpl ticketRepository = new TicketRepositoryImpl() ;
                                 ticketRepository.addNewTicket(inputTicket);
                                 tsService.bookTicket(inputTicket);
+
                             }
                             break;
                         }

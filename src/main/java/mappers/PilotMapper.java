@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class PilotMapper {
 
@@ -21,6 +22,7 @@ public class PilotMapper {
     public Pilot mapToPilot(ResultSet resultSet) throws SQLException {
         if (resultSet.next()) {
             return new Pilot.PilotBuilder(resultSet.getString(2),resultSet.getString(3))
+                    .setId(UUID.fromString(resultSet.getString(1)))
                     .setHireDate(resultSet.getString(4))
                     .build();
         } else {
@@ -34,6 +36,7 @@ public class PilotMapper {
         while (resultSet.next()) {
             PilotList.add(
                     new Pilot.PilotBuilder(resultSet.getString(2),resultSet.getString(3))
+                            .setId(UUID.fromString(resultSet.getString(1)))
                             .setHireDate(resultSet.getString(4))
                             .build()
             );

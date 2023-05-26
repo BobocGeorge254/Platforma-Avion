@@ -18,12 +18,12 @@ public class AirportRepositoryImpl implements AirportRepository {
     private static final AirportMapper airportMapper = AirportMapper.getInstance();
 
     @Override
-    public Object getAirportById(int id) {
+    public Object getAirportById(UUID id) {
         String selectSql = "SELECT * FROM airports WHERE id=?";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {
-            preparedStatement.setInt(1, id);
+            preparedStatement.setString(1, id.toString());
 
             ResultSet resultSet = preparedStatement.executeQuery();
             return airportMapper.mapToAirport(resultSet);
@@ -35,12 +35,12 @@ public class AirportRepositoryImpl implements AirportRepository {
     }
 
     @Override
-    public void deleteAirportById(int id) {
+    public void deleteAirportById(UUID id) {
         String deleteSql = "DELETE FROM airports WHERE id=?";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(deleteSql)) {
-            preparedStatement.setInt(1, id);
+            preparedStatement.setString(1, id.toString());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -49,12 +49,12 @@ public class AirportRepositoryImpl implements AirportRepository {
     }
 
     @Override
-    public void updateAirportById(int id, Airport newAirport) {
+    public void updateAirportById(UUID id, Airport newAirport) {
         String updateSql = "UPDATE airports SET city=?, address=? WHERE id=?";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(updateSql)) {
-            preparedStatement.setInt(3, id);
+            preparedStatement.setString(3, id.toString());
             preparedStatement.setString(1, newAirport.getCity().toString());
             preparedStatement.setString(2, newAirport.getAddress().toString());
 
@@ -70,7 +70,7 @@ public class AirportRepositoryImpl implements AirportRepository {
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(insertSql)) {
-            preparedStatement.setInt(1, Airport.getId());
+            preparedStatement.setString(1, Airport.getId().toString());
             preparedStatement.setString(2, Airport.getCity().toString());
             preparedStatement.setString(3, Airport.getAddress().toString());
 

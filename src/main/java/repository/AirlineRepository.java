@@ -7,11 +7,11 @@ import java.util.UUID;
 
 public interface AirlineRepository {
 
-    Object getAirlineById(int id);
+    Object getAirlineById(UUID id);
 
-    void deleteAirlineById(int id);
+    void deleteAirlineById(UUID id);
 
-    void updateAirlineById(int id, Airline newObject);
+    void updateAirlineById(UUID id, Airline newObject);
 
     void addNewAirline(Airline Airline);
 

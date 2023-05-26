@@ -1,11 +1,11 @@
 package model;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class Pilot extends Human {
 
-    private static int index = 0 ;
-    private int id ;
+    private UUID id ;
     private String hireDate;
 
     private Pilot(PilotBuilder builder) {
@@ -14,30 +14,32 @@ public class Pilot extends Human {
         this.hireDate = builder.hireDate;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+
 
     public String getHireDate() {
         return hireDate;
     }
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
     public static class PilotBuilder {
 
-        private int id ;
+        private UUID id ;
         private String firstName;
         private String lastName;
         private String hireDate;
 
         public PilotBuilder(String firstName, String lastName) {
-            this.id = index ;
-            index ++ ;
+
             this.firstName = firstName;
             this.lastName = lastName;
+        }
+
+        public PilotBuilder setId(UUID id) {
+            this.id = id ;
+            return this ;
         }
 
         public PilotBuilder setHireDate(String  hireDate) {

@@ -7,11 +7,11 @@ import java.util.UUID;
 
 public interface PassengerRepository {
 
-    Object getPassengerById(int id);
+    Object getPassengerById(UUID id);
 
-    void deletePassengerById(int id);
+    void deletePassengerById(UUID id);
 
-    void updatePassengerById(int id, Passenger newObject);
+    void updatePassengerById(UUID id, Passenger newObject);
 
     void addNewPassenger(Passenger Passenger);
 

@@ -2,27 +2,24 @@ package model;
 
 import model.enums.AirlineType;
 
+import java.util.UUID;
+
 public class Airport {
 
-    private static int index = 0 ;
-    private int id ;
+    private UUID id ;
     private String city ;
     private String address ;
 
     public Airport() {}
 
     public Airport(AirportBuilder builder) {
-        this.id = builder.id; ;
+        this.id = builder.id ;
         this.city = builder.city;
         this.address = builder.address;
-        index = index + 1 ;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -44,14 +41,15 @@ public class Airport {
     }
 
     public static class AirportBuilder {
-
-        private int id ;
+        private UUID id ;
         private String city ;
         private String address ;
 
-        public AirportBuilder() {
-            this.id = index ;
+        public AirportBuilder setId(UUID id) {
+            this.id = id ;
+            return this ;
         }
+
         public AirportBuilder setCity(String city) {
             this.city = city;
             return this ;

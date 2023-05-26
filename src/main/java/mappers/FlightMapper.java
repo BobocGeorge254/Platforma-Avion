@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class FlightMapper {
 
@@ -31,15 +32,16 @@ public class FlightMapper {
         if (resultSet.next()) {
             Flight.FlightBuilder flightBuilder = new Flight.FlightBuilder();
             AirlineRepositoryImpl airlineRepository = new AirlineRepositoryImpl() ;
-            Airline airline = (Airline) airlineRepository.getAirlineById(resultSet.getInt(2)) ;
+            Airline airline = (Airline) airlineRepository.getAirlineById(UUID.fromString(resultSet.getString(2))) ;
 
             AirportRepositoryImpl airportRepository = new AirportRepositoryImpl() ;
-            Airport departure = (Airport) airportRepository.getAirportById(resultSet.getInt(3)) ;
-            Airport destination = (Airport) airportRepository.getAirportById(resultSet.getInt(4)) ;
+            Airport departure = (Airport) airportRepository.getAirportById(UUID.fromString(resultSet.getString(3))) ;
+            Airport destination = (Airport) airportRepository.getAirportById(UUID.fromString(resultSet.getString(4))) ;
 
             PilotRepositoryImpl pilotRepository = new PilotRepositoryImpl() ;
-            Pilot pilot = (Pilot) pilotRepository.getPilotById(resultSet.getInt(6)) ;
+            Pilot pilot = (Pilot) pilotRepository.getPilotById(UUID.fromString(resultSet.getString(6))) ;
 
+            flightBuilder.setId(UUID.fromString(resultSet.getString(1)));
             flightBuilder.setAirline(airline) ;
             flightBuilder.setDeparture(departure) ;
             flightBuilder.setDestination(destination) ;
@@ -58,15 +60,16 @@ public class FlightMapper {
         while (resultSet.next()) {
             Flight.FlightBuilder flightBuilder = new Flight.FlightBuilder();
             AirlineRepositoryImpl airlineRepository = new AirlineRepositoryImpl() ;
-            Airline airline = (Airline) airlineRepository.getAirlineById(resultSet.getInt(2)) ;
+            Airline airline = (Airline) airlineRepository.getAirlineById(UUID.fromString(resultSet.getString(2))) ;
 
             AirportRepositoryImpl airportRepository = new AirportRepositoryImpl() ;
-            Airport departure = (Airport) airportRepository.getAirportById(resultSet.getInt(3)) ;
-            Airport destination = (Airport) airportRepository.getAirportById(resultSet.getInt(4)) ;
+            Airport departure = (Airport) airportRepository.getAirportById(UUID.fromString(resultSet.getString(3))) ;
+            Airport destination = (Airport) airportRepository.getAirportById(UUID.fromString(resultSet.getString(4))) ;
 
             PilotRepositoryImpl pilotRepository = new PilotRepositoryImpl() ;
-            Pilot pilot = (Pilot) pilotRepository.getPilotById(resultSet.getInt(6)) ;
+            Pilot pilot = (Pilot) pilotRepository.getPilotById(UUID.fromString(resultSet.getString(6))) ;
 
+            flightBuilder.setId(UUID.fromString(resultSet.getString(1)));
             flightBuilder.setAirline(airline) ;
             flightBuilder.setDeparture(departure) ;
             flightBuilder.setDestination(destination) ;

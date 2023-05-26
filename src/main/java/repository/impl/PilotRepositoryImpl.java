@@ -15,12 +15,12 @@ public class PilotRepositoryImpl implements PilotRepository {
     private static final PilotMapper pilotMapper = PilotMapper.getInstance();
 
     @Override
-    public Object getPilotById(int id) {
+    public Object getPilotById(UUID id) {
         String selectSql = "SELECT * FROM Pilots WHERE id=?";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {
-            preparedStatement.setInt(1, id);
+            preparedStatement.setString(1, id.toString());
 
             ResultSet resultSet = preparedStatement.executeQuery();
             return pilotMapper.mapToPilot(resultSet);
@@ -32,12 +32,12 @@ public class PilotRepositoryImpl implements PilotRepository {
     }
 
     @Override
-    public void deletePilotById(int id) {
+    public void deletePilotById(UUID id) {
         String deleteSql = "DELETE FROM Pilots WHERE id=?";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(deleteSql)) {
-            preparedStatement.setInt(1, id);
+            preparedStatement.setString(1, id.toString());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -46,12 +46,12 @@ public class PilotRepositoryImpl implements PilotRepository {
     }
 
     @Override
-    public void updatePilotById(int id, Pilot newPilot) {
+    public void updatePilotById(UUID id, Pilot newPilot) {
         String updateSql = "UPDATE Pilots SET first_name=?, last_name=?, hire_date=? WHERE id=?";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(updateSql)) {
-            preparedStatement.setInt(4, id);
+            preparedStatement.setString(4, id.toString());
             preparedStatement.setString(1, newPilot.getFirstName().toString());
             preparedStatement.setString(2, newPilot.getLastName().toString());
             preparedStatement.setString(3, newPilot.getHireDate());
@@ -68,7 +68,7 @@ public class PilotRepositoryImpl implements PilotRepository {
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(insertSql)) {
-            preparedStatement.setInt(1, Pilot.getId());
+            preparedStatement.setString(1, Pilot.getId().toString());
             preparedStatement.setString(2, Pilot.getFirstName().toString());
             preparedStatement.setString(3, Pilot.getLastName().toString());
             preparedStatement.setString(4, Pilot.getHireDate().toString());

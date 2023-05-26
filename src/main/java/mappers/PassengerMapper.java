@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class PassengerMapper {
 
@@ -21,6 +22,7 @@ public class PassengerMapper {
     public Passenger mapToPassenger(ResultSet resultSet) throws SQLException {
         if (resultSet.next()) {
             return new Passenger.PassengerBuilder(resultSet.getString(2),resultSet.getString(3))
+                    .setId(UUID.fromString(resultSet.getString(1)))
                     .setEmail(resultSet.getString(4))
                     .setPhoneNumber(resultSet.getString(5))
                     .build();

@@ -7,11 +7,11 @@ import java.util.UUID;
 
 public interface PilotRepository {
 
-    Object getPilotById(int id);
+    Object getPilotById(UUID id);
 
-    void deletePilotById(int id);
+    void deletePilotById(UUID id);
 
-    void updatePilotById(int id, Pilot newObject);
+    void updatePilotById(UUID id, Pilot newObject);
 
     void addNewPilot(Pilot Pilot);
 

@@ -11,13 +11,13 @@ import java.sql.SQLException;
 
 public class TicketRepositoryImpl implements TicketRepository {
     public void addNewTicket(Ticket ticket) {
-        String insertSql = "INSERT INTO TICKETS (id, passenger_id, flight_id, seat_id, price) VALUES (?, ?, ?, ?, ?)";
+        String insertSql = "INSERT INTO TICKETS (id, passenger_id, flight_id, seat_number, price) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(insertSql)) {
-            preparedStatement.setInt(1, ticket.getId());
-            preparedStatement.setInt(2, ticket.getPassenger().getId());
-            preparedStatement.setInt(3, ticket.getFlight().getId());
+            preparedStatement.setString(1, ticket.getId().toString());
+            preparedStatement.setString(2, ticket.getPassenger().getId().toString());
+            preparedStatement.setString(3, ticket.getFlight().getId().toString());
             preparedStatement.setInt(4,ticket.getSeat().getNumber());
             preparedStatement.setDouble(5,ticket.getPrice());
 

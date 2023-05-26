@@ -4,10 +4,10 @@ import java.util.Date;
 import model.Seat;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class Flight {
-    private static int index = 1000;
-    private int id;
+    private UUID id;
     private Airline airline;
     private Airport departure;
     private Airport destination;
@@ -16,7 +16,7 @@ public class Flight {
     private Pilot pilot;
 
     private Flight(FlightBuilder builder) {
-        this.id = builder.id;
+        this.id = builder.id ;
         this.airline = builder.airline;
         this.departure = builder.departure;
         this.destination = builder.destination;
@@ -26,10 +26,9 @@ public class Flight {
         for (int i = 0; i <= 140; ++i) {
             this.seats[i] = new Seat(i);
         }
-        index = index + 1;
     }
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -62,7 +61,8 @@ public class Flight {
     }
 
     public static class FlightBuilder {
-        private int id;
+
+        private UUID id;
         private Airline airline;
         private Airport departure;
         private Airport destination;
@@ -70,8 +70,9 @@ public class Flight {
         private String date;
         private Pilot pilot;
 
-        public FlightBuilder() {
-            this.id = index;
+        public FlightBuilder setId(UUID id) {
+            this.id = id;
+            return this;
         }
 
         public FlightBuilder setAirline(Airline airline) {

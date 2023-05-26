@@ -1,9 +1,10 @@
 package model;
 import model.enums.* ;
 
+import java.util.UUID;
+
 public class Ticket {
-    private static int index = 1 ;
-    private int id ;
+    private UUID id ;
     private Passenger passenger ;
     private Flight flight ;
     private Seat seat ;
@@ -12,12 +13,11 @@ public class Ticket {
     public Ticket() {}
 
     public Ticket(TicketBuilder builder) {
-        this.id = builder.id; ;
+        this.id = builder.id ;
         this.passenger = builder.passenger;
         this.flight = builder.flight;
         this.seat = builder.seat;
         this.price = this.getPrice() ;
-        index = index + 1 ;
     }
 
     public double getPrice() {
@@ -51,20 +51,22 @@ public class Ticket {
         return seat;
     }
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
     public static class TicketBuilder {
-        private int id ;
+        private UUID id ;
         private Passenger passenger ;
         private Flight flight ;
         private Seat seat ;
         private double price ;
 
-        public TicketBuilder() {
-            this.id = index ;
+        public TicketBuilder setId(UUID id) {
+            this.id = id ;
+            return this ;
         }
+
         public TicketBuilder setPrice(double price) {
             this.price = price ;
             return this ;

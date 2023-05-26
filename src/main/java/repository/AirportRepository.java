@@ -7,11 +7,11 @@ import java.util.UUID;
 
 public interface AirportRepository {
 
-    Object getAirportById(int id);
+    Object getAirportById(UUID id);
 
-    void deleteAirportById(int id);
+    void deleteAirportById(UUID id);
 
-    void updateAirportById(int id, Airport newObject);
+    void updateAirportById(UUID id, Airport newObject);
 
     void addNewAirport(Airport Airport);
 

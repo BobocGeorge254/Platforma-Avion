@@ -1,9 +1,10 @@
 package model;
 
+import java.util.UUID;
+
 public class Passenger extends Human {
 
-    private static int index = 0 ;
-    private int id ;
+    private UUID id ;
     private String email;
     private String phoneNumber;
 
@@ -22,22 +23,25 @@ public class Passenger extends Human {
         return phoneNumber;
     }
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
     public static class PassengerBuilder {
 
-        private int id ;
+        private UUID id ;
         private String firstName;
         private String lastName;
         private String email;
         private String phoneNumber;
 
         public PassengerBuilder(String firstName, String lastName) {
-            this.id = index ;
             this.firstName = firstName;
             this.lastName = lastName;
+        }
+        public PassengerBuilder setId(UUID id) {
+            this.id = id ;
+            return this ;
         }
 
         public PassengerBuilder setEmail(String email) {

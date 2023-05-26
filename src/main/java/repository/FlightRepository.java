@@ -4,14 +4,15 @@ package repository;
 import model.Flight;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface FlightRepository {
 
-    Object getFlightById(int id);
+    Object getFlightById(UUID id);
 
     void addNewFlight(Flight flight);
 
-    void deleteFlightById(int id) ;
+    void deleteFlightById(UUID id) ;
 
     List <Flight> getAllFlights() ;
 }

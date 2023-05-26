@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class AirlineMapper {
 
@@ -22,6 +23,7 @@ public class AirlineMapper {
     public Airline mapToAirline(ResultSet resultSet) throws SQLException {
         if (resultSet.next()) {
             return new Airline.AirlineBuilder()
+                    .setId(UUID.fromString(resultSet.getString(1)))
                     .setName(resultSet.getString(2))
                     .setType(AirlineType.valueOf(resultSet.getString(3)))
                     .build();
@@ -36,6 +38,7 @@ public class AirlineMapper {
         while (resultSet.next()) {
             airlineList.add(
                     new Airline.AirlineBuilder()
+                            .setId(UUID.fromString(resultSet.getString(1)))
                             .setName(resultSet.getString(2))
                             .setType(AirlineType.valueOf(resultSet.getString(3)))
                             .build()

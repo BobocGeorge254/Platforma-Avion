@@ -18,12 +18,12 @@ public class AirlineRepositoryImpl implements AirlineRepository {
     private static final AirlineMapper airlineMapper = AirlineMapper.getInstance();
 
     @Override
-    public Object getAirlineById(int id) {
+    public Object getAirlineById(UUID id) {
         String selectSql = "SELECT * FROM airlines WHERE id=?";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectSql)) {
-            preparedStatement.setInt(1, id);
+            preparedStatement.setString(1, id.toString());
 
             ResultSet resultSet = preparedStatement.executeQuery();
             return airlineMapper.mapToAirline(resultSet);
@@ -35,12 +35,12 @@ public class AirlineRepositoryImpl implements AirlineRepository {
     }
 
     @Override
-    public void deleteAirlineById(int id) {
+    public void deleteAirlineById(UUID id) {
         String deleteSql = "DELETE FROM airlines WHERE id=?";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(deleteSql)) {
-            preparedStatement.setInt(1, id);
+            preparedStatement.setString(1, id.toString());
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -49,12 +49,12 @@ public class AirlineRepositoryImpl implements AirlineRepository {
     }
 
     @Override
-    public void updateAirlineById(int id, Airline newAirline) {
+    public void updateAirlineById(UUID id, Airline newAirline) {
         String updateSql = "UPDATE airlines SET name=?, type=? WHERE id=?";
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(updateSql)) {
-            preparedStatement.setInt(3, id);
+            preparedStatement.setString(3, id.toString());
             preparedStatement.setString(1, newAirline.getName());
             preparedStatement.setString(2, newAirline.getType().toString());
 
@@ -70,7 +70,7 @@ public class AirlineRepositoryImpl implements AirlineRepository {
 
         try (Connection connection = DatabaseConfiguration.getDatabaseConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(insertSql)) {
-            preparedStatement.setInt(1, airline.getId());
+            preparedStatement.setString(1, airline.getId().toString());
             preparedStatement.setString(2, airline.getName());
             preparedStatement.setString(3, airline.getType().toString());
 

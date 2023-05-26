@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class AirportMapper {
 
@@ -21,6 +22,7 @@ public class AirportMapper {
     public Airport mapToAirport(ResultSet resultSet) throws SQLException {
         if (resultSet.next()) {
             return new Airport.AirportBuilder()
+                    .setId(UUID.fromString(resultSet.getString(1)))
                     .setCity(resultSet.getString(2))
                     .setAddress(resultSet.getString(3))
                     .build();
@@ -35,6 +37,7 @@ public class AirportMapper {
         while (resultSet.next()) {
             AirportList.add(
                     new Airport.AirportBuilder()
+                            .setId(UUID.fromString(resultSet.getString(1)))
                             .setCity(resultSet.getString(2))
                             .setAddress(resultSet.getString(3))
                             .build()
