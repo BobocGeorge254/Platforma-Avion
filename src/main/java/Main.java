@@ -1,5 +1,8 @@
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
+import application.csv.CsvWriter;
 import com.opencsv.CSVWriter;
 import model.*;
 import model.enums.*;
@@ -17,12 +20,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
 
         TicketSystem ts = TicketSystem.getInstance() ;
         TicketSystemServiceImpl tsService = new TicketSystemServiceImpl(ts) ;
-        String filePath = "data.csv" ;
+        final CsvWriter CSV_WRITER = CsvWriter.getInstance() ;
+        String filePathString = "data.csv" ;
+        Path filePath = Paths.get(filePathString) ;
 
         Scanner menu = new Scanner(System.in) ;
         if (Integer.valueOf(menu.nextLine()) == 1) {
@@ -256,9 +261,15 @@ public class Main {
                 System.out.println("Book your flight");
                 counter = counter - 1;
 
+                Set<String> printedCities = new HashSet<>() ;
+
                 System.out.println("Where do you want to fly from?");
                 for (Airport departure : departuresBD) {
-                    System.out.println(departure.getCity());
+                    String city = departure.getCity();
+                    if (!printedCities.contains(city)) {
+                        System.out.println(city);
+                        printedCities.add(city);
+                    }
                 }
 
                 boolean isValidDeparture = false ;
@@ -290,11 +301,16 @@ public class Main {
                        .map(flight -> flight.getDestination())
                        .collect(Collectors.toList());
 
+                printedCities = new HashSet<>() ;
 
-               System.out.println("Where do you want to fly to?");
-               for (Airport destination : destinations) {
-                   System.out.println(destination.getCity());
-               }
+                System.out.println("Where do you want to fly to?");
+                for (Airport destination : destinations) {
+                    String city = destination.getCity();
+                    if (!printedCities.contains(city)) {
+                        System.out.println(city);
+                        printedCities.add(city);
+                    }
+                }
 
                boolean isValidDestination = false ;
                String destinationID = null ;
@@ -452,7 +468,22 @@ public class Main {
                             if (decision.equals("YES")) {
                                 PassengerRepositoryImpl passengerRepository = new PassengerRepositoryImpl() ;
                                 passengerRepository.addNewPassenger(inputPassenger);
-                                //passengerRepository.deletePassengerById(0);
+
+                                TicketServiceImpl ticketService = new TicketServiceImpl(inputTicket) ;
+                                String[] content = {
+                                        "Airline: " + inputTicket.getFlight().getAirline().getName() + '\n',
+                                        "From: " + inputTicket.getFlight().getDeparture().getCity() + '\n',
+                                        "To: " + inputTicket.getFlight().getDestination().getCity() + '\n',
+                                        "On: " + inputTicket.getFlight().getDate() + '\n',
+                                        "First name: " + inputTicket.getPassenger().getFirstName() + '\n',
+                                        "Last name: " + inputTicket.getPassenger().getLastName() + '\n'
+                                } ;
+                                try {
+                                    CSV_WRITER.writeALine(content, filePath);
+                                }
+                                catch (Exception e) {
+                                    e.printStackTrace();
+                                }
 
                                 TicketRepositoryImpl ticketRepository = new TicketRepositoryImpl() ;
                                 ticketRepository.addNewTicket(inputTicket);
