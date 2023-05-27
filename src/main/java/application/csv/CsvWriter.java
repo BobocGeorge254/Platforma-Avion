@@ -36,32 +36,11 @@ public class CsvWriter {
         return Files.readString(path);
     }
 
-    public String writeALine(String[] line, Path path) throws Exception {
-        try (CSVWriter writer = new CSVWriter(new FileWriter(path.toFile()))) {
-                writer.writeNext(line);
+
+    public void appendToCSV(String[] line, Path path) throws Exception {
+        try (CSVWriter writer = new CSVWriter(new FileWriter(path.toFile(), true))) {
+            writer.writeNext(line);
         }
-        // Read the file and return its contents
-        return Files.readString(path);
     }
 
-    public String writeAllLines(List<String[]> lines, Path path) throws Exception {
-        try (CSVWriter writer = new CSVWriter(new FileWriter(path.toString()))) {
-            writer.writeAll(lines);
-        }
-        return Files.readString(path);
-    }
-
-    public String executeLineByLine(List<String[]> lines) throws Exception {
-        Path path = Paths.get(
-                ClassLoader.getSystemResource(CSV_PATH_WRITE).toURI());
-
-        return writeLineByLine(lines, path);
-    }
-
-    public String executeAllLines(List<String[]> lines) throws Exception {
-        Path path = Paths.get(
-                ClassLoader.getSystemResource(CSV_PATH_WRITE).toURI());
-
-        return writeAllLines(lines, path);
-    }
 }
